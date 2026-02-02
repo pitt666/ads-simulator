@@ -525,6 +525,44 @@
         .instructions strong {
             color: #1a73e8;
         }
+        .preview-toggle {
+    display: flex;
+    gap: 5px;
+    background: #f1f3f4;
+    border-radius: 6px;
+    padding: 3px;
+}
+
+.toggle-btn {
+    padding: 6px 12px;
+    border: none;
+    background: transparent;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #5f6368;
+    font-weight: 500;
+}
+
+.toggle-btn.active {
+    background: white;
+    color: #1a73e8;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.toggle-btn:hover {
+    background: rgba(255,255,255,0.5);
+}
+
+.mobile-preview {
+    max-width: 360px;
+    margin: 0 auto;
+}
+
+.preview-container-mode {
+    transition: opacity 0.2s;
+}
     </style>
 </head>
 <body>
@@ -1092,68 +1130,75 @@ Especialistas certificados. Atención estructurada y decisiones informadas.
             });
         }
 
-        function createRSACard(rsa, index, siteName, displayUrl) {
-            const card = document.createElement('div');
-            card.className = 'rsa-card';
-            card.id = `rsa-card-${index}`;
+ function createRSACard(rsa, index, siteName, displayUrl) {
+    const card = document.createElement('div');
+    card.className = 'rsa-card';
+    card.id = `rsa-card-${index}`;
 
-            // Create headlines list
-            const headlinesList = rsa.headlines.map(h => {
-                const pinBadge = h.pin ? `<span class="pin-badge">📌 Pos ${h.pin}</span>` : '';
-                const typeBadge = `<span class="type-badge ${h.type.toLowerCase()}">${h.type}</span>`;
-                return `
-                    <div class="headline-item">
-                        ${pinBadge}
-                        ${typeBadge}
-                        <span>${h.text}</span>
-                    </div>
-                `;
-            }).join('');
+    // Create preview variations
+    const previewsDesktop = createRSAPreviews(rsa, siteName, displayUrl, 'desktop');
+    const previewsMobile = createRSAPreviews(rsa, siteName, displayUrl, 'mobile');
 
-            // Create preview variations
-            const previews = createRSAPreviews(rsa, siteName, displayUrl);
+    card.innerHTML = `
+        <div class="rsa-header">
+            <div class="rsa-title">🎯 ${rsa.name}</div>
+            <div class="rsa-select">
+                <input type="checkbox" id="rsa-select-${index}" checked onchange="toggleRSASelection(${index})">
+                <label for="rsa-select-${index}" style="font-size: 13px; cursor: pointer;">Incluir en export</label>
+            </div>
+        </div>
 
-            card.innerHTML = `
-                <div class="rsa-header">
-                    <div class="rsa-title">🎯 ${rsa.name}</div>
-                    <div class="rsa-select">
-                        <input type="checkbox" id="rsa-select-${index}" checked onchange="toggleRSASelection(${index})">
-                        <label for="rsa-select-${index}" style="font-size: 13px; cursor: pointer;">Incluir en export</label>
-                    </div>
+        <div class="rsa-preview-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <strong style="font-size: 13px; color: #5f6368;">Vista Previa (3 variaciones):</strong>
+                <div class="preview-toggle">
+                    <button class="toggle-btn active" onclick="switchPreview(${index}, 'desktop')" id="toggle-desktop-${index}">
+                        🖥️ Desktop
+                    </button>
+                    <button class="toggle-btn" onclick="switchPreview(${index}, 'mobile')" id="toggle-mobile-${index}">
+                        📱 Mobile
+                    </button>
                 </div>
-                
-                
+            </div>
+            <div id="preview-desktop-${index}" class="preview-container-mode">
+                ${previewsDesktop}
+            </div>
+            <div id="preview-mobile-${index}" class="preview-container-mode" style="display: none;">
+                ${previewsMobile}
+            </div>
+        </div>
+    `;
 
-                <div class="rsa-preview-section">
-                    <strong style="font-size: 13px; color: #5f6368; display: block; margin-bottom: 10px;">Vista Previa (3 variaciones):</strong>
-                    ${previews}
+    return card;
+}
+
+       function createRSAPreviews(rsa, siteName, displayUrl, mode = 'desktop') {
+    let html = '';
+    const isMobile = mode === 'mobile';
+    
+    for (let i = 0; i < 3; i++) {
+        const selectedHeadlines = selectHeadlinesForRSAPreview(rsa.headlines, i);
+        const selectedDescriptions = rsa.descriptions.slice(0, 2);
+        
+        // Mobile muestra max 2 headlines
+        const displayHeadlines = isMobile ? selectedHeadlines.slice(0, 2) : selectedHeadlines;
+        
+        const previewClass = isMobile ? 'mini-preview mobile-preview' : 'mini-preview';
+        
+        html += `
+            <div class="${previewClass}">
+                <div style="font-size: ${isMobile ? '9px' : '10px'}; color: #5f6368; margin-bottom: 4px;">
+                    <span style="text-transform: uppercase; font-weight: 500;">Sponsored</span> · ${siteName}
                 </div>
-            `;
-
-            return card;
-        }
-
-        function createRSAPreviews(rsa, siteName, displayUrl) {
-            let html = '';
-            
-            for (let i = 0; i < 3; i++) {
-                const selectedHeadlines = selectHeadlinesForRSAPreview(rsa.headlines, i);
-                const selectedDescriptions = rsa.descriptions.slice(0, 2);
-                
-                html += `
-                    <div class="mini-preview">
-                        <div style="font-size: 10px; color: #5f6368; margin-bottom: 4px;">
-                            <span style="text-transform: uppercase; font-weight: 500;">Sponsored</span> · ${siteName}
-                        </div>
-                        <div style="font-size: 11px; color: #1a73e8; margin-bottom: 4px;">${displayUrl}</div>
-                        <div class="mini-headlines">${selectedHeadlines.join(' | ')}</div>
-                        <div class="mini-description">${selectedDescriptions.join(' ')}</div>
-                    </div>
-                `;
-            }
-            
-            return html;
-        }
+                <div style="font-size: ${isMobile ? '10px' : '11px'}; color: #1a73e8; margin-bottom: 4px;">${displayUrl}</div>
+                <div class="mini-headlines" style="font-size: ${isMobile ? '13px' : '14px'};">${displayHeadlines.join(' | ')}</div>
+                <div class="mini-description" style="font-size: ${isMobile ? '11px' : '12px'};">${selectedDescriptions.join(' ')}</div>
+            </div>
+        `;
+    }
+    
+    return html;
+}
 
         function selectHeadlinesForRSAPreview(headlines, variation) {
             // Separate headlines by type
@@ -1264,6 +1309,32 @@ Especialistas certificados. Atención estructurada y decisiones informadas.
             updatePreviews();
             alert(`✅ Parseado completado!\n${parsedHeadlines.length} headlines y ${parsedDescriptions.length} descriptions encontradas.`);
         }
+
+        function switchPreview(rsaIndex, mode) {
+    // Toggle buttons
+    const desktopBtn = document.getElementById(`toggle-desktop-${rsaIndex}`);
+    const mobileBtn = document.getElementById(`toggle-mobile-${rsaIndex}`);
+    
+    if (mode === 'desktop') {
+        desktopBtn.classList.add('active');
+        mobileBtn.classList.remove('active');
+    } else {
+        mobileBtn.classList.add('active');
+        desktopBtn.classList.remove('active');
+    }
+    
+    // Toggle previews
+    const desktopPreview = document.getElementById(`preview-desktop-${rsaIndex}`);
+    const mobilePreview = document.getElementById(`preview-mobile-${rsaIndex}`);
+    
+    if (mode === 'desktop') {
+        desktopPreview.style.display = 'block';
+        mobilePreview.style.display = 'none';
+    } else {
+        desktopPreview.style.display = 'none';
+        mobilePreview.style.display = 'block';
+    }
+}
 
         function exportToCSV() {
             // Check if in strategic mode
