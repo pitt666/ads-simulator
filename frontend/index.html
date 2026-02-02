@@ -1168,27 +1168,32 @@ Especialistas certificados. Atención estructurada y decisiones informadas.
         }
 
         function selectHeadlinesForRSAPreview(headlines, variation) {
-            // Always respect pins
-            const pinnedHeadlines = headlines.filter(h => h.pin);
-            const unpinnedHeadlines = headlines.filter(h => !h.pin);
+            // Separate headlines by type
+            const h1Headlines = headlines.filter(h => h.type === 'H1');
+            const h2Headlines = headlines.filter(h => h.type === 'H2');
+            const h3Headlines = headlines.filter(h => h.type === 'H3');
             
-            const result = ['', '', ''];
+            const result = [];
             
-            // Place pinned headlines
-            pinnedHeadlines.forEach(h => {
-                result[h.pin - 1] = h.text;
-            });
-            
-            // Fill remaining slots with unpinned
-            let unpinnedIndex = variation % unpinnedHeadlines.length;
-            for (let i = 0; i < result.length; i++) {
-                if (!result[i] && unpinnedHeadlines.length > 0) {
-                    result[i] = unpinnedHeadlines[unpinnedIndex % unpinnedHeadlines.length].text;
-                    unpinnedIndex++;
-                }
+            // Select 1 random H1 (rotating based on variation)
+            if (h1Headlines.length > 0) {
+                const h1Index = variation % h1Headlines.length;
+                result.push(h1Headlines[h1Index].text);
             }
             
-            return result.filter(h => h);
+            // Select 1 random H2 (rotating based on variation)
+            if (h2Headlines.length > 0) {
+                const h2Index = variation % h2Headlines.length;
+                result.push(h2Headlines[h2Index].text);
+            }
+            
+            // Select 1 random H3 (rotating based on variation)
+            if (h3Headlines.length > 0) {
+                const h3Index = variation % h3Headlines.length;
+                result.push(h3Headlines[h3Index].text);
+            }
+            
+            return result;
         }
 
         function toggleRSASelection(index) {
