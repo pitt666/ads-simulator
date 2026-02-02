@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Ads RSA Simulator - Arsen Web 3.0</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #202124;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #1a73e8;
+        }
+
+        .subtitle {
+            color: #5f6368;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .panel h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #202124;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #5f6368;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px 60px 10px 12px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: #1a73e8;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .char-counter {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: #5f6368;
+            font-weight: 500;
+        }
+
+        .char-counter.warning {
+            color: #ea8600;
+        }
+
+        .char-counter.error {
+            color: #d93025;
+        }
+
+        textarea + .char-counter {
+            top: 12px;
+            transform: none;
+        }
+
+        .headline-section {
+            margin-bottom: 30px;
+        }
+
+        .headline-inputs {
+            display: grid;
+            gap: 15px;
+        }
+
+        .description-section {
+            margin-bottom: 30px;
+        }
+
+        .url-section {
+            display: grid;
+            gap: 15px;
+        }
+
+        /* Preview Styles */
+        .preview-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .ad-preview {
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            padding: 16px;
+            background: white;
+        }
+
+        .ad-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .sponsored-tag {
+            font-size: 11px;
+            font-weight: 500;
+            color: #5f6368;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ad-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #1a73e8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .site-name {
+            font-size: 12px;
+            color: #5f6368;
+        }
+
+        .display-url {
+            font-size: 14px;
+            color: #1a73e8;
+            margin-bottom: 8px;
+        }
+
+        .ad-headlines {
+            font-size: 20px;
+            color: #1a0dab;
+            line-height: 1.3;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+
+        .ad-headlines:hover {
+            text-decoration: underline;
+        }
+
+        .ad-description {
+            font-size: 14px;
+            color: #4d5156;
+            line-height: 1.4;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #1a73e8;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1557b0;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #1a73e8;
+            border: 1px solid #dadce0;
+        }
+
+        .btn-secondary:hover {
+            background: #f8f9fa;
+        }
+
+        .btn-success {
+            background: #1e8e3e;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #188038;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e8eaed;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #5f6368;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            color: #1a73e8;
+            border-bottom-color: #1a73e8;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Bulk paste area */
+        .bulk-paste-area {
+            margin-bottom: 20px;
+        }
+
+        .bulk-textarea {
+            width: 100%;
+            min-height: 400px;
+            padding: 15px;
+            border: 2px dashed #dadce0;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            resize: vertical;
+        }
+
+        .bulk-textarea:focus {
+            border-color: #1a73e8;
+            border-style: solid;
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #5f6368;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+
+        .preview-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #5f6368;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #5f6368;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        /* Strategic Blocks Styles */
+        .strategic-banks {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .bank-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #e8eaed;
+        }
+
+        .bank-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            resize: vertical;
+            margin-bottom: 8px;
+        }
+
+        .bank-textarea:focus {
+            outline: none;
+            border-color: #1a73e8;
+        }
+
+        .generated-rsas {
+            margin-top: 30px;
+        }
+
+        .rsa-card {
+            background: white;
+            border: 2px solid #e8eaed;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .rsa-card.selected {
+            border-color: #1a73e8;
+            box-shadow: 0 2px 8px rgba(26, 115, 232, 0.2);
+        }
+
+        .rsa-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e8eaed;
+        }
+
+        .rsa-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #202124;
+        }
+
+        .rsa-select {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rsa-select input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .rsa-headlines-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .headline-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .headline-item .pin-badge {
+            background: #1a73e8;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .headline-item .type-badge {
+            background: #5f6368;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .headline-item .type-badge.h1 {
+            background: #ea8600;
+        }
+
+        .headline-item .type-badge.h2 {
+            background: #1e8e3e;
+        }
+
+        .headline-item .type-badge.h3 {
+            background: #1a73e8;
+        }
+
+        .rsa-preview-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e8eaed;
+        }
+
+        .mini-preview {
+            background: white;
+            border: 1px solid #dadce0;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        .mini-preview .mini-headlines {
+            color: #1a0dab;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .mini-preview .mini-description {
+            color: #4d5156;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Pin indicator */
+        .pin-indicator {
+            display: inline-block;
+            font-size: 10px;
+            background: #1a73e8;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .instructions {
+            background: #e8f0fe;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .instructions strong {
+            color: #1a73e8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Google Ads RSA Simulator</h1>
+            <p class="subtitle">Herramienta interna de Arsen Web 3.0 - Previsualiza tus anuncios RSA antes de subirlos a Google Ads</p>
+        </header>
+
+        <div class="main-grid">
+            <!-- Left Panel - Input -->
+            <div class="panel">
+                <h2>📝 Ad Builder</h2>
+                
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('manual')">Modo Normal</button>
+                    <button class="tab" onclick="switchTab('bulk')">Bulk Paste</button>
+                    <button class="tab" onclick="switchTab('strategic')">🎯 Bloques Estratégicos</button>
+                </div>
+
+                <!-- Manual Input Tab -->
+                <div id="manual-tab" class="tab-content active">
+                    <div class="headline-section">
+                        <label style="font-size: 14px; font-weight: 600; margin-bottom: 10px; display: block;">Headlines (máx. 15)</label>
+                        <div class="headline-inputs" id="headline-inputs">
+                            <!-- Headlines will be generated by JS -->
+                        </div>
+                        <button class="btn-secondary" onclick="addHeadline()" style="margin-top: 10px;">+ Agregar Headline</button>
+                    </div>
+
+                    <div class="description-section">
+                        <label style="font-size: 14px; font-weight: 600; margin-bottom: 10px; display: block;">Descriptions (máx. 4)</label>
+                        <div id="description-inputs">
+                            <!-- Descriptions will be generated by JS -->
+                        </div>
+                        <button class="btn-secondary" onclick="addDescription()" style="margin-top: 10px;">+ Agregar Description</button>
+                    </div>
+
+                    <div class="url-section">
+                        <div class="input-group">
+                            <label>Site Name</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="site-name" placeholder="Ej: Healteeth Dental" maxlength="35" oninput="updatePreviews()">
+                                <span class="char-counter" id="site-name-counter">0/35</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label>Display URL</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="display-url" placeholder="Ej: www.healteeth.com.mx" maxlength="35" oninput="updatePreviews()">
+                                <span class="char-counter" id="display-url-counter">0/35</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bulk Paste Tab -->
+                <div id="bulk-tab" class="tab-content">
+                    <div class="instructions">
+                        <strong>Instrucciones:</strong> Pega tu documento de copy estructurado. El sistema detectará automáticamente los bloques H1, H2, H3 y descripciones.
+                    </div>
+                    <div class="bulk-paste-area">
+                        <textarea class="bulk-textarea" id="bulk-paste" placeholder="Pega aquí tu documento con estructura:
+
+BLOQUE H1 — Título del bloque
+Clínica Dental en Cuernavaca
+Dentista en Cuernavaca
+...
+
+BLOQUE H2 — Título del bloque
+¿Necesitas atención dental ahora?
+Atención dental inmediata
+...
+
+BLOQUE H3 — Título del bloque
+Agenda tu consulta
+Reserva tu cita
+...
+
+DESCRIPCIONES — RSA
+Texto de descripción largo...
+"></textarea>
+                        <p class="help-text">El parser detectará automáticamente tus bloques y los organizará en headlines y descriptions.</p>
+                    </div>
+                    <button class="btn-primary" onclick="parseBulkText()">📋 Parsear Documento</button>
+                </div>
+
+                <!-- Strategic Blocks Tab -->
+                <div id="strategic-tab" class="tab-content">
+                    <div class="instructions">
+                        <strong>🎯 Modo Bloques Estratégicos:</strong> Pega tus bancos de headlines separados por categoría. El simulador generará automáticamente múltiples RSAs optimizados con pinning estratégico.
+                    </div>
+
+                    <div class="strategic-banks">
+                        <div class="bank-section">
+                            <label style="font-size: 14px; font-weight: 600; margin-bottom: 8px; display: block;">
+                                📌 BANCO H1 - Marca/Ubicación/Credenciales
+                            </label>
+                            <textarea id="bank-h1" class="bank-textarea" placeholder="Pega tus H1 aquí, uno por línea:
+
+Clínica Dental en Cuernavaca
+Dentista en Cuernavaca
+Centro Dental en Cuernavaca
+Clínica Dental Certificada
+Dentistas Especialistas
+..."></textarea>
+                            <p class="help-text" id="h1-count">0 headlines detectados</p>
+                        </div>
+
+                        <div class="bank-section">
+                            <label style="font-size: 14px; font-weight: 600; margin-bottom: 8px; display: block;">
+                                🎯 BANCO H2 - Ganchos/Beneficios/Urgencia
+                            </label>
+                            <textarea id="bank-h2" class="bank-textarea" placeholder="Pega tus H2 aquí, uno por línea:
+
+Diagnóstico claro desde el inicio
+Atención dental con claridad
+Evita errores de diagnóstico
+¿Necesitas atención dental ahora?
+Reduce riesgos dentales
+..."></textarea>
+                            <p class="help-text" id="h2-count">0 headlines detectados</p>
+                        </div>
+
+                        <div class="bank-section">
+                            <label style="font-size: 14px; font-weight: 600; margin-bottom: 8px; display: block;">
+                                💥 BANCO H3 - CTAs/Acciones
+                            </label>
+                            <textarea id="bank-h3" class="bank-textarea" placeholder="Pega tus H3 aquí, uno por línea:
+
+Agenda tu consulta
+Reserva tu cita
+Inicia tu diagnóstico
+Consulta con especialistas
+Atención clínica experta
+..."></textarea>
+                            <p class="help-text" id="h3-count">0 headlines detectados</p>
+                        </div>
+
+                        <div class="bank-section">
+                            <label style="font-size: 14px; font-weight: 600; margin-bottom: 8px; display: block;">
+                                📝 DESCRIPTIONS
+                            </label>
+                            <textarea id="bank-desc" class="bank-textarea" placeholder="Pega tus descriptions aquí, una por línea (máx 90 chars c/u):
+
+Clínica dental especializada con diagnóstico profesional y plan claro desde la primera visita.
+Especialistas certificados. Atención estructurada y decisiones informadas.
+..."></textarea>
+                            <p class="help-text" id="desc-count">0 descriptions detectadas</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <label style="font-size: 13px; font-weight: 500; margin-bottom: 10px; display: block;">
+                            ¿Cuántos RSAs quieres generar?
+                        </label>
+                        <div class="button-group">
+                            <button class="btn-primary" onclick="generateStrategicRSAs(3)">🎲 Generar 3 RSAs</button>
+                            <button class="btn-primary" onclick="generateStrategicRSAs(5)">🎲 Generar 5 RSAs</button>
+                            <button class="btn-primary" onclick="generateStrategicRSAs(10)">🎲 Generar 10 RSAs</button>
+                        </div>
+                    </div>
+
+                    <div id="strategic-config" style="margin-top: 20px; display: none;">
+                        <div class="url-section">
+                            <div class="input-group">
+                                <label>Site Name</label>
+                                <div class="input-wrapper">
+                                    <input type="text" id="strategic-site-name" placeholder="Ej: Healteeth Dental" maxlength="35">
+                                    <span class="char-counter" id="strategic-site-name-counter">0/35</span>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label>Display URL</label>
+                                <div class="input-wrapper">
+                                    <input type="text" id="strategic-display-url" placeholder="Ej: www.healteeth.com.mx" maxlength="35">
+                                    <span class="char-counter" id="strategic-display-url-counter">0/35</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-success" onclick="exportToCSV()">💾 Exportar a CSV</button>
+                    <button class="btn-secondary" onclick="clearAll()">🔄 Limpiar Todo</button>
+                </div>
+            </div>
+
+            <!-- Right Panel - Preview -->
+            <div class="panel">
+                <h2>👁️ Ad Previews</h2>
+                <p class="help-text" style="margin-bottom: 20px;">Vista previa en tiempo real de cómo se verán tus anuncios en Google Search</p>
+                
+                <div class="preview-container" id="preview-container">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📱</div>
+                        <p>Comienza a escribir para ver el preview de tus anuncios</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let headlines = [];
+        let descriptions = [];
+        let headlineCount = 3;
+        let descriptionCount = 2;
+        let generatedRSAs = [];
+        let currentMode = 'manual';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeInputs();
+            updatePreviews();
+            setupBankCounters();
+        });
+
+        function initializeInputs() {
+            // Create initial headline inputs
+            for (let i = 0; i < headlineCount; i++) {
+                createHeadlineInput(i);
+            }
+            // Create initial description inputs
+            for (let i = 0; i < descriptionCount; i++) {
+                createDescriptionInput(i);
+            }
+        }
+
+        function createHeadlineInput(index) {
+            const container = document.getElementById('headline-inputs');
+            const div = document.createElement('div');
+            div.className = 'input-group';
+            div.innerHTML = `
+                <label>Headline ${index + 1}</label>
+                <div class="input-wrapper">
+                    <input type="text" id="headline-${index}" placeholder="Máx. 30 caracteres" maxlength="30" oninput="updatePreviews()">
+                    <span class="char-counter" id="headline-${index}-counter">0/30</span>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        function createDescriptionInput(index) {
+            const container = document.getElementById('description-inputs');
+            const div = document.createElement('div');
+            div.className = 'input-group';
+            div.innerHTML = `
+                <label>Description ${index + 1}</label>
+                <div class="input-wrapper">
+                    <textarea id="description-${index}" placeholder="Máx. 90 caracteres" maxlength="90" oninput="updatePreviews()" rows="2"></textarea>
+                    <span class="char-counter" id="description-${index}-counter">0/90</span>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        function addHeadline() {
+            if (headlineCount < 15) {
+                createHeadlineInput(headlineCount);
+                headlineCount++;
+            } else {
+                alert('Máximo 15 headlines permitidos');
+            }
+        }
+
+        function addDescription() {
+            if (descriptionCount < 4) {
+                createDescriptionInput(descriptionCount);
+                descriptionCount++;
+            } else {
+                alert('Máximo 4 descriptions permitidas');
+            }
+        }
+
+        function updatePreviews() {
+            // Update character counters
+            for (let i = 0; i < headlineCount; i++) {
+                const input = document.getElementById(`headline-${i}`);
+                if (input) {
+                    const counter = document.getElementById(`headline-${i}-counter`);
+                    const length = input.value.length;
+                    counter.textContent = `${length}/30`;
+                    counter.className = 'char-counter';
+                    if (length > 25) counter.classList.add('warning');
+                    if (length >= 30) counter.classList.add('error');
+                }
+            }
+
+            for (let i = 0; i < descriptionCount; i++) {
+                const input = document.getElementById(`description-${i}`);
+                if (input) {
+                    const counter = document.getElementById(`description-${i}-counter`);
+                    const length = input.value.length;
+                    counter.textContent = `${length}/90`;
+                    counter.className = 'char-counter';
+                    if (length > 75) counter.classList.add('warning');
+                    if (length >= 90) counter.classList.add('error');
+                }
+            }
+
+            // Update site name and URL counters
+            const siteName = document.getElementById('site-name');
+            const displayUrl = document.getElementById('display-url');
+            
+            if (siteName) {
+                const counter = document.getElementById('site-name-counter');
+                const length = siteName.value.length;
+                counter.textContent = `${length}/35`;
+                counter.className = 'char-counter';
+                if (length > 30) counter.classList.add('warning');
+                if (length >= 35) counter.classList.add('error');
+            }
+
+            if (displayUrl) {
+                const counter = document.getElementById('display-url-counter');
+                const length = displayUrl.value.length;
+                counter.textContent = `${length}/35`;
+                counter.className = 'char-counter';
+                if (length > 30) counter.classList.add('warning');
+                if (length >= 35) counter.classList.add('error');
+            }
+
+            // Generate previews
+            generatePreviews();
+        }
+
+        function generatePreviews() {
+            // Collect all headlines and descriptions
+            const allHeadlines = [];
+            const allDescriptions = [];
+
+            for (let i = 0; i < headlineCount; i++) {
+                const input = document.getElementById(`headline-${i}`);
+                if (input && input.value.trim()) {
+                    allHeadlines.push(input.value.trim());
+                }
+            }
+
+            for (let i = 0; i < descriptionCount; i++) {
+                const input = document.getElementById(`description-${i}`);
+                if (input && input.value.trim()) {
+                    allDescriptions.push(input.value.trim());
+                }
+            }
+
+            const siteName = document.getElementById('site-name')?.value || 'Google Ads';
+            const displayUrl = document.getElementById('display-url')?.value || 'www.example.com';
+
+            const container = document.getElementById('preview-container');
+
+            // If no data, show empty state
+            if (allHeadlines.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📱</div>
+                        <p>Comienza a escribir para ver el preview de tus anuncios</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Generate 3 preview variations
+            container.innerHTML = '';
+            const numPreviews = Math.min(3, Math.max(1, Math.floor(allHeadlines.length / 2)));
+
+            for (let i = 0; i < numPreviews; i++) {
+                const preview = createAdPreview(allHeadlines, allDescriptions, siteName, displayUrl, i);
+                container.appendChild(preview);
+            }
+        }
+
+        function createAdPreview(headlines, descriptions, siteName, displayUrl, variation) {
+            const div = document.createElement('div');
+            div.className = 'ad-preview';
+
+            // Select headlines for this variation (max 3 headlines shown in search)
+            const selectedHeadlines = selectHeadlinesForVariation(headlines, variation, 3);
+            const selectedDescriptions = selectDescriptionsForVariation(descriptions, variation, 2);
+
+            const headlineText = selectedHeadlines.join(' | ');
+            const descriptionText = selectedDescriptions.join(' ');
+
+            div.innerHTML = `
+                <div class="ad-header">
+                    <span class="sponsored-tag">Sponsored</span>
+                    <div class="ad-icon">Ad</div>
+                </div>
+                <div class="site-name">${siteName}</div>
+                <div class="display-url">${displayUrl}</div>
+                <div class="ad-headlines">${headlineText || 'Agrega headlines...'}</div>
+                <div class="ad-description">${descriptionText || 'Agrega descriptions...'}</div>
+            `;
+
+            return div;
+        }
+
+        function selectHeadlinesForVariation(headlines, variation, max) {
+            if (headlines.length === 0) return [];
+            const start = (variation * 2) % headlines.length;
+            const selected = [];
+            for (let i = 0; i < Math.min(max, headlines.length); i++) {
+                selected.push(headlines[(start + i) % headlines.length]);
+            }
+            return selected;
+        }
+
+        function selectDescriptionsForVariation(descriptions, variation, max) {
+            if (descriptions.length === 0) return [];
+            const start = variation % descriptions.length;
+            const selected = [];
+            for (let i = 0; i < Math.min(max, descriptions.length); i++) {
+                selected.push(descriptions[(start + i) % descriptions.length]);
+            }
+            return selected;
+        }
+
+        function switchTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(`${tab}-tab`).classList.add('active');
+
+            currentMode = tab;
+
+            // Clear preview if switching away from strategic
+            if (tab !== 'strategic') {
+                const container = document.getElementById('preview-container');
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📱</div>
+                        <p>Comienza a escribir para ver el preview de tus anuncios</p>
+                    </div>
+                `;
+            }
+        }
+
+        function setupBankCounters() {
+            const bankIds = ['bank-h1', 'bank-h2', 'bank-h3', 'bank-desc'];
+            const counterIds = ['h1-count', 'h2-count', 'h3-count', 'desc-count'];
+
+            bankIds.forEach((bankId, index) => {
+                const textarea = document.getElementById(bankId);
+                if (textarea) {
+                    textarea.addEventListener('input', () => updateBankCount(bankId, counterIds[index]));
+                }
+            });
+        }
+
+        function updateBankCount(bankId, counterId) {
+            const textarea = document.getElementById(bankId);
+            const counter = document.getElementById(counterId);
+            
+            if (textarea && counter) {
+                const lines = textarea.value.split('\n').filter(line => line.trim().length > 0);
+                const type = counterId.includes('desc') ? 'descriptions' : 'headlines';
+                counter.textContent = `${lines.length} ${type} detectados`;
+            }
+        }
+
+        function generateStrategicRSAs(count) {
+            // Get all banks
+            const h1Bank = document.getElementById('bank-h1').value.split('\n').filter(l => l.trim()).map(l => l.trim().substring(0, 30));
+            const h2Bank = document.getElementById('bank-h2').value.split('\n').filter(l => l.trim()).map(l => l.trim().substring(0, 30));
+            const h3Bank = document.getElementById('bank-h3').value.split('\n').filter(l => l.trim()).map(l => l.trim().substring(0, 30));
+            const descBank = document.getElementById('bank-desc').value.split('\n').filter(l => l.trim()).map(l => l.trim().substring(0, 90));
+
+            // Validate
+            if (h1Bank.length === 0 || h2Bank.length === 0 || h3Bank.length === 0) {
+                alert('⚠️ Necesitas al menos 1 headline en cada banco (H1, H2, H3)');
+                return;
+            }
+
+            if (descBank.length === 0) {
+                alert('⚠️ Necesitas al menos 1 description');
+                return;
+            }
+
+            // Generate RSAs
+            generatedRSAs = [];
+
+            for (let i = 0; i < count; i++) {
+                const rsa = generateSingleRSA(h1Bank, h2Bank, h3Bank, descBank, i, count);
+                generatedRSAs.push(rsa);
+            }
+
+            // Display RSAs
+            displayGeneratedRSAs();
+            
+            // Show config section
+            document.getElementById('strategic-config').style.display = 'block';
+        }
+
+        function generateSingleRSA(h1Bank, h2Bank, h3Bank, descBank, index, total) {
+            const rsa = {
+                name: `RSA ${index + 1}`,
+                headlines: [],
+                descriptions: [],
+                pins: {}
+            };
+
+            // Strategy: Distribute headlines evenly across RSAs
+            const h1PerRSA = Math.min(4, h1Bank.length);
+            const h2PerRSA = Math.min(4, h2Bank.length);
+            const h3PerRSA = Math.min(3, h3Bank.length);
+
+            // Select H1s (4 max)
+            const h1Start = (index * h1PerRSA) % h1Bank.length;
+            for (let i = 0; i < h1PerRSA; i++) {
+                const h1 = h1Bank[(h1Start + i) % h1Bank.length];
+                rsa.headlines.push({ text: h1, type: 'H1', pin: i === 0 ? 1 : null });
+            }
+
+            // Select H2s (4 max)
+            const h2Start = (index * h2PerRSA) % h2Bank.length;
+            for (let i = 0; i < h2PerRSA; i++) {
+                const h2 = h2Bank[(h2Start + i) % h2Bank.length];
+                rsa.headlines.push({ text: h2, type: 'H2', pin: null });
+            }
+
+            // Select H3s (3 max)
+            const h3Start = (index * h3PerRSA) % h3Bank.length;
+            for (let i = 0; i < h3PerRSA; i++) {
+                const h3 = h3Bank[(h3Start + i) % h3Bank.length];
+                rsa.headlines.push({ text: h3, type: 'H3', pin: i === 0 ? 3 : null });
+            }
+
+            // Select descriptions (2-4)
+            const descPerRSA = Math.min(2, descBank.length);
+            const descStart = (index * descPerRSA) % descBank.length;
+            for (let i = 0; i < descPerRSA; i++) {
+                rsa.descriptions.push(descBank[(descStart + i) % descBank.length]);
+            }
+
+            return rsa;
+        }
+
+        function displayGeneratedRSAs() {
+            const container = document.getElementById('preview-container');
+            
+            if (generatedRSAs.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🎯</div>
+                        <p>Genera RSAs usando los bloques estratégicos</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const siteName = document.getElementById('strategic-site-name')?.value || 'Google Ads';
+            const displayUrl = document.getElementById('strategic-display-url')?.value || 'www.example.com';
+
+            container.innerHTML = '<div class="generated-rsas"></div>';
+            const rsasContainer = container.querySelector('.generated-rsas');
+
+            generatedRSAs.forEach((rsa, index) => {
+                const rsaCard = createRSACard(rsa, index, siteName, displayUrl);
+                rsasContainer.appendChild(rsaCard);
+            });
+        }
+
+        function createRSACard(rsa, index, siteName, displayUrl) {
+            const card = document.createElement('div');
+            card.className = 'rsa-card';
+            card.id = `rsa-card-${index}`;
+
+            // Create headlines list
+            const headlinesList = rsa.headlines.map(h => {
+                const pinBadge = h.pin ? `<span class="pin-badge">📌 Pos ${h.pin}</span>` : '';
+                const typeBadge = `<span class="type-badge ${h.type.toLowerCase()}">${h.type}</span>`;
+                return `
+                    <div class="headline-item">
+                        ${pinBadge}
+                        ${typeBadge}
+                        <span>${h.text}</span>
+                    </div>
+                `;
+            }).join('');
+
+            // Create preview variations
+            const previews = createRSAPreviews(rsa, siteName, displayUrl);
+
+            card.innerHTML = `
+                <div class="rsa-header">
+                    <div class="rsa-title">🎯 ${rsa.name}</div>
+                    <div class="rsa-select">
+                        <input type="checkbox" id="rsa-select-${index}" checked onchange="toggleRSASelection(${index})">
+                        <label for="rsa-select-${index}" style="font-size: 13px; cursor: pointer;">Incluir en export</label>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <strong style="font-size: 13px; color: #5f6368;">Headlines (${rsa.headlines.length}):</strong>
+                </div>
+                <div class="rsa-headlines-list">
+                    ${headlinesList}
+                </div>
+
+                <div style="margin-bottom: 10px;">
+                    <strong style="font-size: 13px; color: #5f6368;">Descriptions (${rsa.descriptions.length}):</strong>
+                </div>
+                <div style="font-size: 13px; color: #202124; line-height: 1.6; margin-bottom: 15px;">
+                    ${rsa.descriptions.map((d, i) => `<div style="margin-bottom: 8px;"><strong>D${i+1}:</strong> ${d}</div>`).join('')}
+                </div>
+
+                <div class="rsa-preview-section">
+                    <strong style="font-size: 13px; color: #5f6368; display: block; margin-bottom: 10px;">Vista Previa (3 variaciones):</strong>
+                    ${previews}
+                </div>
+            `;
+
+            return card;
+        }
+
+        function createRSAPreviews(rsa, siteName, displayUrl) {
+            let html = '';
+            
+            for (let i = 0; i < 3; i++) {
+                const selectedHeadlines = selectHeadlinesForRSAPreview(rsa.headlines, i);
+                const selectedDescriptions = rsa.descriptions.slice(0, 2);
+                
+                html += `
+                    <div class="mini-preview">
+                        <div style="font-size: 10px; color: #5f6368; margin-bottom: 4px;">
+                            <span style="text-transform: uppercase; font-weight: 500;">Sponsored</span> · ${siteName}
+                        </div>
+                        <div style="font-size: 11px; color: #1a73e8; margin-bottom: 4px;">${displayUrl}</div>
+                        <div class="mini-headlines">${selectedHeadlines.join(' | ')}</div>
+                        <div class="mini-description">${selectedDescriptions.join(' ')}</div>
+                    </div>
+                `;
+            }
+            
+            return html;
+        }
+
+        function selectHeadlinesForRSAPreview(headlines, variation) {
+            // Always respect pins
+            const pinnedHeadlines = headlines.filter(h => h.pin);
+            const unpinnedHeadlines = headlines.filter(h => !h.pin);
+            
+            const result = ['', '', ''];
+            
+            // Place pinned headlines
+            pinnedHeadlines.forEach(h => {
+                result[h.pin - 1] = h.text;
+            });
+            
+            // Fill remaining slots with unpinned
+            let unpinnedIndex = variation % unpinnedHeadlines.length;
+            for (let i = 0; i < result.length; i++) {
+                if (!result[i] && unpinnedHeadlines.length > 0) {
+                    result[i] = unpinnedHeadlines[unpinnedIndex % unpinnedHeadlines.length].text;
+                    unpinnedIndex++;
+                }
+            }
+            
+            return result.filter(h => h);
+        }
+
+        function toggleRSASelection(index) {
+            const card = document.getElementById(`rsa-card-${index}`);
+            const checkbox = document.getElementById(`rsa-select-${index}`);
+            
+            if (checkbox.checked) {
+                card.classList.add('selected');
+            } else {
+                card.classList.remove('selected');
+            }
+        }
+
+        function parseBulkText() {
+            const bulkText = document.getElementById('bulk-paste').value;
+            
+            if (!bulkText.trim()) {
+                alert('Por favor pega tu documento de copy primero');
+                return;
+            }
+
+            // Clear existing inputs
+            clearAll();
+
+            // Parse the text
+            const lines = bulkText.split('\n');
+            let currentSection = '';
+            const parsedHeadlines = [];
+            const parsedDescriptions = [];
+
+            for (let line of lines) {
+                line = line.trim();
+                
+                // Detect section headers
+                if (line.match(/^BLOQUE H[123]/i) || line.match(/^H[123]/i)) {
+                    currentSection = 'headline';
+                    continue;
+                } else if (line.match(/^DESCRIPCI[OÓ]N/i) || line.match(/^DESCRIPTION/i)) {
+                    currentSection = 'description';
+                    continue;
+                } else if (line.match(/^BLOQUE/i) || line === '' || line.startsWith('—') || line.startsWith('Plantilla')) {
+                    continue;
+                }
+
+                // Add content to appropriate array
+                if (line && currentSection === 'headline' && parsedHeadlines.length < 15) {
+                    parsedHeadlines.push(line);
+                } else if (line && currentSection === 'description' && parsedDescriptions.length < 4) {
+                    parsedDescriptions.push(line);
+                }
+            }
+
+            // Populate the manual inputs
+            switchTab('manual');
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('.tab:first-child').classList.add('active');
+
+            // Set headlines
+            parsedHeadlines.forEach((headline, i) => {
+                if (i >= headlineCount) {
+                    addHeadline();
+                }
+                const input = document.getElementById(`headline-${i}`);
+                if (input) {
+                    input.value = headline.substring(0, 30);
+                }
+            });
+
+            // Set descriptions
+            parsedDescriptions.forEach((desc, i) => {
+                if (i >= descriptionCount) {
+                    addDescription();
+                }
+                const input = document.getElementById(`description-${i}`);
+                if (input) {
+                    input.value = desc.substring(0, 90);
+                }
+            });
+
+            updatePreviews();
+            alert(`✅ Parseado completado!\n${parsedHeadlines.length} headlines y ${parsedDescriptions.length} descriptions encontradas.`);
+        }
+
+        function exportToCSV() {
+            // Check if in strategic mode
+            if (currentMode === 'strategic' && generatedRSAs.length > 0) {
+                exportStrategicRSAsToCSV();
+                return;
+            }
+
+            // Normal mode export
+            const headlines = [];
+            const descriptions = [];
+            
+            for (let i = 0; i < headlineCount; i++) {
+                const input = document.getElementById(`headline-${i}`);
+                if (input && input.value.trim()) {
+                    headlines.push(input.value.trim());
+                }
+            }
+
+            for (let i = 0; i < descriptionCount; i++) {
+                const input = document.getElementById(`description-${i}`);
+                if (input && input.value.trim()) {
+                    descriptions.push(input.value.trim());
+                }
+            }
+
+            if (headlines.length === 0) {
+                alert('No hay headlines para exportar');
+                return;
+            }
+
+            const siteName = document.getElementById('site-name')?.value || '';
+            const displayUrl = document.getElementById('display-url')?.value || '';
+
+            // Create CSV content
+            let csv = 'Campaign,Ad Group,';
+            
+            // Add headline columns
+            for (let i = 1; i <= 15; i++) {
+                csv += `Headline ${i},`;
+            }
+            
+            // Add description columns
+            for (let i = 1; i <= 4; i++) {
+                csv += `Description ${i},`;
+            }
+            
+            csv += 'Path 1,Path 2,Final URL\n';
+
+            // Add data row
+            csv += `Campaign Name,Ad Group Name,`;
+            
+            // Add headlines (pad with empty if less than 15)
+            for (let i = 0; i < 15; i++) {
+                const value = headlines[i] || '';
+                csv += `"${value.replace(/"/g, '""')}",`;
+            }
+            
+            // Add descriptions (pad with empty if less than 4)
+            for (let i = 0; i < 4; i++) {
+                const value = descriptions[i] || '';
+                csv += `"${value.replace(/"/g, '""')}",`;
+            }
+            
+            csv += `"${siteName}","${displayUrl}",https://www.example.com\n`;
+
+            downloadCSV(csv, 'google-ads-rsa');
+        }
+
+        function exportStrategicRSAsToCSV() {
+            const siteName = document.getElementById('strategic-site-name')?.value || 'Site Name';
+            const displayUrl = document.getElementById('strategic-display-url')?.value || 'www.example.com';
+
+            // Filter selected RSAs
+            const selectedRSAs = generatedRSAs.filter((rsa, index) => {
+                const checkbox = document.getElementById(`rsa-select-${index}`);
+                return checkbox && checkbox.checked;
+            });
+
+            if (selectedRSAs.length === 0) {
+                alert('⚠️ Selecciona al menos 1 RSA para exportar');
+                return;
+            }
+
+            // Create CSV header
+            let csv = 'RSA Name,Campaign,Ad Group,';
+            
+            // Add headline columns with pin positions
+            for (let i = 1; i <= 15; i++) {
+                csv += `Headline ${i},Pin Pos ${i},`;
+            }
+            
+            // Add description columns
+            for (let i = 1; i <= 4; i++) {
+                csv += `Description ${i},`;
+            }
+            
+            csv += 'Site Name,Display URL,Final URL\n';
+
+            // Add each RSA as a row
+            selectedRSAs.forEach(rsa => {
+                csv += `"${rsa.name}",Campaign Name,Ad Group Name,`;
+                
+                // Add headlines with pin positions
+                for (let i = 0; i < 15; i++) {
+                    if (i < rsa.headlines.length) {
+                        const h = rsa.headlines[i];
+                        csv += `"${h.text.replace(/"/g, '""')}","${h.pin || ''}",`;
+                    } else {
+                        csv += `"","",`;
+                    }
+                }
+                
+                // Add descriptions
+                for (let i = 0; i < 4; i++) {
+                    const desc = rsa.descriptions[i] || '';
+                    csv += `"${desc.replace(/"/g, '""')}",`;
+                }
+                
+                csv += `"${siteName}","${displayUrl}",https://www.example.com\n`;
+            });
+
+            downloadCSV(csv, `google-ads-strategic-rsas-${selectedRSAs.length}`);
+            alert(`✅ ${selectedRSAs.length} RSAs exportados exitosamente!`);
+        }
+
+        function downloadCSV(csvContent, filename) {
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `${filename}-${Date.now()}.csv`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function clearAll() {
+            // Clear all headline inputs
+            for (let i = 0; i < headlineCount; i++) {
+                const input = document.getElementById(`headline-${i}`);
+                if (input) input.value = '';
+            }
+
+            // Clear all description inputs
+            for (let i = 0; i < descriptionCount; i++) {
+                const input = document.getElementById(`description-${i}`);
+                if (input) input.value = '';
+            }
+
+            // Clear site name and URL
+            const siteName = document.getElementById('site-name');
+            const displayUrl = document.getElementById('display-url');
+            if (siteName) siteName.value = '';
+            if (displayUrl) displayUrl.value = '';
+
+            // Clear bulk paste
+            const bulkPaste = document.getElementById('bulk-paste');
+            if (bulkPaste) bulkPaste.value = '';
+
+            // Clear strategic blocks
+            const bankH1 = document.getElementById('bank-h1');
+            const bankH2 = document.getElementById('bank-h2');
+            const bankH3 = document.getElementById('bank-h3');
+            const bankDesc = document.getElementById('bank-desc');
+            if (bankH1) bankH1.value = '';
+            if (bankH2) bankH2.value = '';
+            if (bankH3) bankH3.value = '';
+            if (bankDesc) bankDesc.value = '';
+
+            // Clear strategic config
+            const strategicSiteName = document.getElementById('strategic-site-name');
+            const strategicDisplayUrl = document.getElementById('strategic-display-url');
+            if (strategicSiteName) strategicSiteName.value = '';
+            if (strategicDisplayUrl) strategicDisplayUrl.value = '';
+
+            // Reset counters
+            updateBankCount('bank-h1', 'h1-count');
+            updateBankCount('bank-h2', 'h2-count');
+            updateBankCount('bank-h3', 'h3-count');
+            updateBankCount('bank-desc', 'desc-count');
+
+            // Clear generated RSAs
+            generatedRSAs = [];
+
+            updatePreviews();
+        }
+    </script>
+</body>
+</html>
