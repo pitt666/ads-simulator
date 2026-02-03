@@ -1014,6 +1014,43 @@ Especialistas certificados. Atención estructurada y decisiones informadas.
             `;
             container.appendChild(div);
         }
+        function createSitelinkInput(index) {
+    const container = document.getElementById('sitelink-inputs');
+    const div = document.createElement('div');
+    div.className = 'sitelink-group';
+    div.style.cssText = 'display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px;';
+    div.innerHTML = `
+        <div class="input-group">
+            <label>Texto del Link ${index + 1} (máx. 25 chars)</label>
+            <div class="input-wrapper">
+                <input type="text" id="sitelink-text-${index}" placeholder="Ej: Agendar Cita" maxlength="25">
+                <span class="char-counter" id="sitelink-text-${index}-counter">0/25</span>
+            </div>
+        </div>
+        <div class="input-group">
+            <label>Description (máx. 35 chars)</label>
+            <div class="input-wrapper">
+                <input type="text" id="sitelink-desc-${index}" placeholder="Ej: Agenda tu consulta hoy" maxlength="35">
+                <span class="char-counter" id="sitelink-desc-${index}-counter">0/35</span>
+            </div>
+        </div>
+    `;
+    container.appendChild(div);
+}
+
+function createCalloutInput(index) {
+    const container = document.getElementById('callout-inputs');
+    const div = document.createElement('div');
+    div.className = 'input-group';
+    div.innerHTML = `
+        <label>Callout ${index + 1} (máx. 25 chars)</label>
+        <div class="input-wrapper">
+            <input type="text" id="callout-${index}" placeholder="Ej: Envío gratis" maxlength="25">
+            <span class="char-counter" id="callout-${index}-counter">0/25</span>
+        </div>
+    `;
+    container.appendChild(div);
+}
 
         function addHeadline() {
             if (headlineCount < 15) {
@@ -1032,7 +1069,23 @@ Especialistas certificados. Atención estructurada y decisiones informadas.
                 alert('Máximo 4 descriptions permitidas');
             }
         }
+function addSitelink() {
+    if (sitelinkCount < 10) {
+        createSitelinkInput(sitelinkCount);
+        sitelinkCount++;
+    } else {
+        alert('Máximo 10 sitelinks permitidos');
+    }
+}
 
+function addCallout() {
+    if (calloutCount < 10) {
+        createCalloutInput(calloutCount);
+        calloutCount++;
+    } else {
+        alert('Máximo 10 callouts permitidos');
+    }
+}
         function updatePreviews() {
             // Update character counters
             for (let i = 0; i < headlineCount; i++) {
