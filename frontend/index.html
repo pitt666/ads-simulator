@@ -1651,6 +1651,34 @@ Especialistas certificados. Atención estructurada y decisiones informadas.
 
             updatePreviews();
         }
+        function moveCarousel(button, direction) {
+    const container = button.parentElement;
+    const carousel = container.querySelector('.mobile-carousel');
+    const dots = container.querySelectorAll('.carousel-dot');
+    
+    // Get current index
+    let currentIndex = 0;
+    dots.forEach((dot, i) => {
+        if (dot.classList.contains('active')) currentIndex = i;
+    });
+    
+    // Calculate new index
+    let newIndex = currentIndex + direction;
+    if (newIndex < 0) newIndex = 2;
+    if (newIndex > 2) newIndex = 0;
+    
+    // Move carousel
+    carousel.style.transform = `translateX(-${newIndex * 100}%)`;
+    
+    // Update dots
+    dots.forEach((dot, i) => {
+        if (i === newIndex) {
+            dot.classList.add('active');
+        } else {
+            dot.classList.remove('active');
+        }
+    });
+}
     </script>
 </body>
 </html>
