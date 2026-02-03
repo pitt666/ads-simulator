@@ -931,9 +931,10 @@ Especialistas certificados. Atención estructurada y decisiones informadas.
                 </div>
 
                <div class="button-group">
-                <button class="btn-success" onclick="exportToExcel()">📥 Exportar Todo (Excel)</button>
-                <button class="btn-secondary" onclick="clearAll()">🔄 Limpiar Todo</button>
-            </div>
+                    <button class="btn-success" onclick="exportToExcel()">📥 Exportar Excel</button>
+                    <button class="btn-success" onclick="exportToHTML()">📄 Exportar Reporte HTML</button>
+                    <button class="btn-secondary" onclick="clearAll()">🔄 Limpiar Todo</button>
+                </div>
             </div>
 
             <!-- Right Panel - Preview -->
@@ -2023,7 +2024,194 @@ function createRSAPreviews(rsa, siteName, displayUrl, mode = 'desktop') {
             link.click();
             document.body.removeChild(link);
         }
+function exportToHTML() {
+    if (generatedRSAs.length === 0) {
+        alert('No hay RSAs generados para exportar');
+        return;
+    }
 
+    // Collect data
+    const extensions = collectExtensions();
+    const campaignName = document.getElementById('strategic-site-name')?.value || 
+                        document.getElementById('site-name')?.value || 
+                        'Mi Campaña';
+    const displayUrl = document.getElementById('strategic-display-url')?.value || 
+                      document.getElementById('display-url')?.value || 
+                      'www.example.com';
+    
+    // Build RSAs HTML
+    let rsasHTML = '';
+    generatedRSAs.forEach((rsa, index) => {
+        const headlines = rsa.headlines.map(h => h.text).slice(0, 3).join(' | ');
+        const descriptions = rsa.descriptions.slice(0, 2).join(' ');
+        
+        rsasHTML += `
+            <div style="background: white; border: 1px solid #dadce0; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <h3 style="color: #202124; margin: 0 0 15px 0; font-size: 16px;">🎯 ${rsa.name}</h3>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 6px;">
+                    <div style="font-size: 10px; color: #5f6368; margin-bottom: 4px;">
+                        <span style="text-transform: uppercase; font-weight: 500;">SPONSORED</span> · ${campaignName}
+                    </div>
+                    <div style="font-size: 11px; color: #1a73e8; margin-bottom: 4px;">${displayUrl}</div>
+                    <div style="font-size: 14px; color: #1a0dab; font-weight: 400; line-height: 1.3; margin-bottom: 8px;">
+                        ${headlines}
+                    </div>
+                    <div style="font-size: 12px; color: #4d5156; line-height: 1.4;">
+                        ${descriptions}
+                    </div>
+                </div>
+                
+                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e8eaed;">
+                    <strong style="font-size: 13px; color: #5f6368;">Headlines completos (${rsa.headlines.length}):</strong>
+                    <div style="margin-top: 8px;">
+                        ${rsa.headlines.map(h => `
+                            <span style="display: inline-block; padding: 4px 8px; margin: 4px; background: ${h.type === 'H1' ? '#ff9800' : h.type === 'H2' ? '#4caf50' : '#2196f3'}; color: white; border-radius: 4px; font-size: 11px;">
+                                ${h.type}
+                            </span>
+                            <span style="font-size: 13px; color: #202124;">${h.text}</span>
+                        `).join('<br>')}
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    // Build Extensions HTML
+    let extensionsHTML = '';
+    
+    if (extensions.sitelinks.length > 0 || extensions.callouts.length > 0 || extensions.snippets.values.length > 0 || extensions.phone) {
+        extensionsHTML = `
+            <div style="background: white; border: 1px solid #dadce0; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <h3 style="color: #202124; margin: 0 0 15px 0; font-size: 16px;">🔗 Extensiones de Anuncios</h3>
+        `;
+        
+        if (extensions.snippets.header && extensions.snippets.values.length > 0) {
+            extensionsHTML += `
+                <div style="margin-bottom: 15px;">
+                    <strong style="color: #5f6368; font-size: 13px;">📋 Structured Snippets:</strong>
+                    <div style="margin-top: 5px; font-size: 13px; color: #202124;">
+                        <strong>${extensions.snippets.header}:</strong> ${extensions.snippets.values.join(' · ')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        if (extensions.sitelinks.length > 0) {
+            extensionsHTML += `
+                <div style="margin-bottom: 15px;">
+                    <strong style="color: #5f6368; font-size: 13px;">📎 Sitelinks:</strong>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 5px;">
+                        ${extensions.sitelinks.map(link => `
+                            <div style="background: #f8f9fa; padding: 10px; border-radius: 4px;">
+                                <div style="color: #1a0dab; font-weight: 500; font-size: 13px;">${link.text}</div>
+                                ${link.description ? `<div style="color: #4d5156; font-size: 12px;">${link.description}</div>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        if (extensions.callouts.length > 0) {
+            extensionsHTML += `
+                <div style="margin-bottom: 15px;">
+                    <strong style="color: #5f6368; font-size: 13px;">💬 Callouts:</strong>
+                    <div style="margin-top: 5px; font-size: 13px; color: #70757a;">
+                        ${extensions.callouts.map(c => `✓ ${c}`).join(' · ')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        if (extensions.phone) {
+            extensionsHTML += `
+                <div>
+                    <strong style="color: #5f6368; font-size: 13px;">📞 Teléfono:</strong>
+                    <div style="margin-top: 5px; font-size: 14px; color: #1a0dab; font-weight: 500;">
+                        ${extensions.phone}
+                    </div>
+                </div>
+            `;
+        }
+        
+        extensionsHTML += `</div>`;
+    }
+    
+    // Build complete HTML
+    const fullHTML = `<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte RSAs - ${campaignName}</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #f8f9fa;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+            color: #202124;
+            font-size: 28px;
+        }
+        .header p {
+            margin: 5px 0;
+            color: #5f6368;
+            font-size: 14px;
+        }
+        @media print {
+            body { background: white; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Reporte de Google Ads RSAs</h1>
+            <p><strong>Campaña:</strong> ${campaignName}</p>
+            <p><strong>URL:</strong> ${displayUrl}</p>
+            <p><strong>Total de RSAs:</strong> ${generatedRSAs.length}</p>
+            <p><strong>Fecha:</strong> ${new Date().toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+            <button onclick="window.print()" class="no-print" style="margin-top: 15px; padding: 10px 20px; background: #1a73e8; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">
+                🖨️ Imprimir / Guardar como PDF
+            </button>
+        </div>
+        
+        ${extensionsHTML}
+        
+        <h2 style="color: #202124; margin: 30px 0 20px 0; font-size: 20px;">Responsive Search Ads (${generatedRSAs.length})</h2>
+        ${rsasHTML}
+        
+        <div style="text-align: center; margin-top: 40px; padding: 20px; color: #5f6368; font-size: 12px;">
+            Generado con Google Ads RSA Simulator · Arsen Web 3.0
+        </div>
+    </div>
+</body>
+</html>`;
+
+    // Download
+    const blob = new Blob([fullHTML], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${campaignName.replace(/[^a-z0-9]/gi, '_')}_Reporte_RSAs.html`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
         function clearAll() {
     // Clear all headline inputs
     for (let i = 0; i < headlineCount; i++) {
