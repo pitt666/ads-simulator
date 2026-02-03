@@ -563,6 +563,94 @@
 .preview-container-mode {
     transition: opacity 0.2s;
 }
+        /* Mobile Carousel Styles */
+.mobile-carousel-container {
+    position: relative;
+    max-width: 375px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.mobile-carousel {
+    display: flex;
+    transition: transform 0.3s ease;
+    gap: 15px;
+}
+
+.mobile-carousel-item {
+    min-width: 100%;
+    flex-shrink: 0;
+}
+
+.mobile-preview {
+    background: white;
+    border: 1px solid #dadce0;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.mobile-ad-badge {
+    display: inline-block;
+    background: #34a853;
+    color: white;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-right: 6px;
+}
+
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #dadce0;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.carousel-dot.active {
+    background: #1a73e8;
+    width: 24px;
+    border-radius: 4px;
+}
+
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    border: 1px solid #dadce0;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 10;
+}
+
+.carousel-nav:hover {
+    background: #f8f9fa;
+}
+
+.carousel-nav.prev {
+    left: -16px;
+}
+
+.carousel-nav.next {
+    right: -16px;
+}
     </style>
 </head>
 <body>
