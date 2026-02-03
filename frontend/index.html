@@ -968,16 +968,24 @@ Especialistas certificados. Atención estructurada y decisiones informadas.
             setupBankCounters();
         });
 
-        function initializeInputs() {
-            // Create initial headline inputs
-            for (let i = 0; i < headlineCount; i++) {
-                createHeadlineInput(i);
-            }
-            // Create initial description inputs
-            for (let i = 0; i < descriptionCount; i++) {
-                createDescriptionInput(i);
-            }
-        }
+       function initializeInputs() {
+    // Create initial headline inputs
+    for (let i = 0; i < headlineCount; i++) {
+        createHeadlineInput(i);
+    }
+    // Create initial description inputs
+    for (let i = 0; i < descriptionCount; i++) {
+        createDescriptionInput(i);
+    }
+    // Create initial sitelinks
+    for (let i = 0; i < sitelinkCount; i++) {
+        createSitelinkInput(i);
+    }
+    // Create initial callouts
+    for (let i = 0; i < calloutCount; i++) {
+        createCalloutInput(i);
+    }
+}
 
         function createHeadlineInput(index) {
             const container = document.getElementById('headline-inputs');
