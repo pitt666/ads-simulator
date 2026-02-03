@@ -724,6 +724,65 @@
                         </div>
                         <button class="btn-secondary" onclick="addDescription()" style="margin-top: 10px;">+ Agregar Description</button>
                     </div>
+                    <!-- Extensiones de Anuncios -->
+<div class="extensions-section" style="margin-top: 30px; padding-top: 30px; border-top: 2px solid #e8eaed;">
+    <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #202124;">
+        🔗 Extensiones de Anuncios <span style="font-size: 12px; font-weight: 400; color: #5f6368;">(Globales - Opcionales)</span>
+    </h3>
+    
+    <!-- Sitelinks -->
+    <div class="extension-group" style="margin-bottom: 25px;">
+        <label style="font-size: 14px; font-weight: 600; margin-bottom: 10px; display: block;">
+            📎 Sitelinks (4-10)
+        </label>
+        <div id="sitelink-inputs"></div>
+        <button class="btn-secondary" onclick="addSitelink()" style="margin-top: 10px;">+ Agregar Sitelink</button>
+    </div>
+    
+    <!-- Callouts -->
+    <div class="extension-group" style="margin-bottom: 25px;">
+        <label style="font-size: 14px; font-weight: 600; margin-bottom: 10px; display: block;">
+            💬 Callouts (2-10 frases cortas)
+        </label>
+        <div id="callout-inputs"></div>
+        <button class="btn-secondary" onclick="addCallout()" style="margin-top: 10px;">+ Agregar Callout</button>
+    </div>
+    
+    <!-- Structured Snippets -->
+    <div class="extension-group" style="margin-bottom: 25px;">
+        <label style="font-size: 14px; font-weight: 600; margin-bottom: 10px; display: block;">
+            📋 Structured Snippets
+        </label>
+        <div class="input-group">
+            <label>Categoría (Header)</label>
+            <select id="snippet-header" style="width: 100%; padding: 10px; border: 1px solid #dadce0; border-radius: 4px; font-size: 14px;">
+                <option value="">Seleccionar...</option>
+                <option value="Servicios">Servicios</option>
+                <option value="Tipos">Tipos</option>
+                <option value="Marcas">Marcas</option>
+                <option value="Modelos">Modelos</option>
+                <option value="Estilos">Estilos</option>
+                <option value="Destinos">Destinos</option>
+                <option value="Cursos">Cursos</option>
+            </select>
+        </div>
+        <div class="input-group" style="margin-top: 10px;">
+            <label>Valores (separados por Enter)</label>
+            <textarea id="snippet-values" placeholder="Implantes&#10;Ortodoncia&#10;Blanqueamiento&#10;Endodoncia" rows="4" style="width: 100%; padding: 10px; border: 1px solid #dadce0; border-radius: 4px; font-size: 14px; font-family: inherit;"></textarea>
+        </div>
+    </div>
+    
+    <!-- Call Extension -->
+    <div class="extension-group">
+        <label style="font-size: 14px; font-weight: 600; margin-bottom: 10px; display: block;">
+            📞 Extensión de Llamada
+        </label>
+        <div class="input-group">
+            <label>Número de teléfono</label>
+            <input type="text" id="call-extension" placeholder="+52 777 123 4567" style="width: 100%; padding: 10px; border: 1px solid #dadce0; border-radius: 4px; font-size: 14px;">
+        </div>
+    </div>
+</div>
 
                     <div class="url-section">
                         <div class="input-group">
