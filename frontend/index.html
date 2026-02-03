@@ -1133,81 +1133,221 @@ function addCallout() {
                 if (length > 30) counter.classList.add('warning');
                 if (length >= 35) counter.classList.add('error');
             }
+// Update sitelink counters
+    for (let i = 0; i < sitelinkCount; i++) {
+        const textInput = document.getElementById(`sitelink-text-${i}`);
+        const descInput = document.getElementById(`sitelink-desc-${i}`);
+        
+        if (textInput) {
+            const counter = document.getElementById(`sitelink-text-${i}-counter`);
+            const length = textInput.value.length;
+            counter.textContent = `${length}/25`;
+            counter.className = 'char-counter';
+            if (length > 20) counter.classList.add('warning');
+            if (length >= 25) counter.classList.add('error');
+        }
+        
+        if (descInput) {
+            const counter = document.getElementById(`sitelink-desc-${i}-counter`);
+            const length = descInput.value.length;
+            counter.textContent = `${length}/35`;
+            counter.className = 'char-counter';
+            if (length > 30) counter.classList.add('warning');
+            if (length >= 35) counter.classList.add('error');
+        }
+    }
 
+    // Update callout counters
+    for (let i = 0; i < calloutCount; i++) {
+        const input = document.getElementById(`callout-${i}`);
+        if (input) {
+            const counter = document.getElementById(`callout-${i}-counter`);
+            const length = input.value.length;
+            counter.textContent = `${length}/25`;
+            counter.className = 'char-counter';
+            if (length > 20) counter.classList.add('warning');
+            if (length >= 25) counter.classList.add('error');
+        }
+    }
             // Generate previews
             generatePreviews();
         }
 
+        function collectExtensions() {
+    const extensions = {
+        sitelinks: [],
+        callouts: [],
+        snippets: {
+            header: '',
+            values: []
+        },
+        phone: ''
+    };
+    
+    // Collect sitelinks
+    for (let i = 0; i < sitelinkCount; i++) {
+        const textInput = document.getElementById(`sitelink-text-${i}`);
+        const descInput = document.getElementById(`sitelink-desc-${i}`);
+        if (textInput && textInput.value.trim()) {
+            extensions.sitelinks.push({
+                text: textInput.value.trim(),
+                description: descInput ? descInput.value.trim() : ''
+            });
+        }
+    }
+    
+    // Collect callouts
+    for (let i = 0; i < calloutCount; i++) {
+        const input = document.getElementById(`callout-${i}`);
+        if (input && input.value.trim()) {
+            extensions.callouts.push(input.value.trim());
+        }
+    }
+    
+    // Collect structured snippets
+    const snippetHeader = document.getElementById('snippet-header');
+    const snippetValues = document.getElementById('snippet-values');
+    if (snippetHeader && snippetHeader.value) {
+        extensions.snippets.header = snippetHeader.value;
+        if (snippetValues && snippetValues.value.trim()) {
+            extensions.snippets.values = snippetValues.value.split('\n').filter(v => v.trim()).map(v => v.trim());
+        }
+    }
+    
+    // Collect phone
+    const phoneInput = document.getElementById('call-extension');
+    if (phoneInput && phoneInput.value.trim()) {
+        extensions.phone = phoneInput.value.trim();
+    }
+    
+    return extensions;
+}
+
         function generatePreviews() {
-            // Collect all headlines and descriptions
-            const allHeadlines = [];
-            const allDescriptions = [];
+    // Collect all headlines and descriptions
+    const allHeadlines = [];
+    const allDescriptions = [];
 
-            for (let i = 0; i < headlineCount; i++) {
-                const input = document.getElementById(`headline-${i}`);
-                if (input && input.value.trim()) {
-                    allHeadlines.push(input.value.trim());
-                }
-            }
-
-            for (let i = 0; i < descriptionCount; i++) {
-                const input = document.getElementById(`description-${i}`);
-                if (input && input.value.trim()) {
-                    allDescriptions.push(input.value.trim());
-                }
-            }
-
-            const siteName = document.getElementById('site-name')?.value || 'Google Ads';
-            const displayUrl = document.getElementById('display-url')?.value || 'www.example.com';
-
-            const container = document.getElementById('preview-container');
-
-            // If no data, show empty state
-            if (allHeadlines.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📱</div>
-                        <p>Comienza a escribir para ver el preview de tus anuncios</p>
-                    </div>
-                `;
-                return;
-            }
-
-            // Generate 3 preview variations
-            container.innerHTML = '';
-            const numPreviews = Math.min(3, Math.max(1, Math.floor(allHeadlines.length / 2)));
-
-            for (let i = 0; i < numPreviews; i++) {
-                const preview = createAdPreview(allHeadlines, allDescriptions, siteName, displayUrl, i);
-                container.appendChild(preview);
-            }
+    for (let i = 0; i < headlineCount; i++) {
+        const input = document.getElementById(`headline-${i}`);
+        if (input && input.value.trim()) {
+            allHeadlines.push(input.value.trim());
         }
+    }
 
-        function createAdPreview(headlines, descriptions, siteName, displayUrl, variation) {
-            const div = document.createElement('div');
-            div.className = 'ad-preview';
+    for (let i = 0; i < descriptionCount; i++) {
+        const input = document.getElementById(`description-${i}`);
+        if (input && input.value.trim()) {
+            allDescriptions.push(input.value.trim());
+        }
+    }
+    
+    // Collect extensions
+    const extensions = collectExtensions();
 
-            // Select headlines for this variation (max 3 headlines shown in search)
-            const selectedHeadlines = selectHeadlinesForVariation(headlines, variation, 3);
-            const selectedDescriptions = selectDescriptionsForVariation(descriptions, variation, 2);
+    const siteName = document.getElementById('site-name')?.value || 'Google Ads';
+    const displayUrl = document.getElementById('display-url')?.value || 'www.example.com';
 
-            const headlineText = selectedHeadlines.join(' | ');
-            const descriptionText = selectedDescriptions.join(' ');
+    const container = document.getElementById('preview-container');
 
-            div.innerHTML = `
-                <div class="ad-header">
-                    <span class="sponsored-tag">Sponsored</span>
-                    <div class="ad-icon">Ad</div>
+    // If no data, show empty state
+    if (allHeadlines.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">📱</div>
+                <p>Comienza a escribir para ver el preview de tus anuncios</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Generate 3 preview variations
+    container.innerHTML = '';
+    const numPreviews = Math.min(3, Math.max(1, Math.floor(allHeadlines.length / 2)));
+
+    for (let i = 0; i < numPreviews; i++) {
+        const preview = createAdPreview(allHeadlines, allDescriptions, siteName, displayUrl, i, extensions);
+        container.appendChild(preview);
+    }
+}
+
+       function createAdPreview(headlines, descriptions, siteName, displayUrl, variation, extensions) {
+    const div = document.createElement('div');
+    div.className = 'ad-preview';
+
+    // Select headlines for this variation (max 3 headlines shown in search)
+    const selectedHeadlines = selectHeadlinesForVariation(headlines, variation, 3);
+    const selectedDescriptions = selectDescriptionsForVariation(descriptions, variation, 2);
+
+    const headlineText = selectedHeadlines.join(' | ');
+    const descriptionText = selectedDescriptions.join(' ');
+    
+    // Build extensions HTML
+    let extensionsHTML = '';
+    
+    // Structured snippets
+    if (extensions.snippets.header && extensions.snippets.values.length > 0) {
+        extensionsHTML += `
+            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #f1f3f4;">
+                <div style="font-size: 12px; color: #70757a; line-height: 1.4;">
+                    <strong>${extensions.snippets.header}:</strong> ${extensions.snippets.values.join(' · ')}
                 </div>
-                <div class="site-name">${siteName}</div>
-                <div class="display-url">${displayUrl}</div>
-                <div class="ad-headlines">${headlineText || 'Agrega headlines...'}</div>
-                <div class="ad-description">${descriptionText || 'Agrega descriptions...'}</div>
+            </div>
+        `;
+    }
+    
+    // Sitelinks
+    if (extensions.sitelinks.length > 0) {
+        const displaySitelinks = extensions.sitelinks.slice(0, 4);
+        extensionsHTML += '<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #f1f3f4; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">';
+        displaySitelinks.forEach(link => {
+            extensionsHTML += `
+                <div style="font-size: 12px;">
+                    <div style="color: #1a0dab; font-weight: 500;">${link.text}</div>
+                    ${link.description ? `<div style="color: #4d5156; font-size: 11px;">${link.description}</div>` : ''}
+                </div>
             `;
+        });
+        extensionsHTML += '</div>';
+    }
+    
+    // Callouts
+    if (extensions.callouts.length > 0) {
+        const displayCallouts = extensions.callouts.slice(0, 6);
+        extensionsHTML += `
+            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #f1f3f4;">
+                <div style="font-size: 11px; color: #70757a;">
+                    ${displayCallouts.map(c => `✓ ${c}`).join(' · ')}
+                </div>
+            </div>
+        `;
+    }
+    
+    // Phone
+    if (extensions.phone) {
+        extensionsHTML += `
+            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #f1f3f4;">
+                <div style="font-size: 13px; color: #1a0dab; font-weight: 500;">
+                    📞 ${extensions.phone}
+                </div>
+            </div>
+        `;
+    }
 
-            return div;
-        }
+    div.innerHTML = `
+        <div class="ad-header">
+            <span class="sponsored-tag">Sponsored</span>
+            <div class="ad-icon">Ad</div>
+        </div>
+        <div class="site-name">${siteName}</div>
+        <div class="display-url">${displayUrl}</div>
+        <div class="ad-headlines">${headlineText || 'Agrega headlines...'}</div>
+        <div class="ad-description">${descriptionText || 'Agrega descriptions...'}</div>
+        ${extensionsHTML}
+    `;
 
+    return div;
+}
         function selectHeadlinesForVariation(headlines, variation, max) {
             if (headlines.length === 0) return [];
             const start = (variation * 2) % headlines.length;
