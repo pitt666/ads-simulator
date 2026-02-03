@@ -651,6 +651,42 @@
 .carousel-nav.next {
     right: -16px;
 }
+.phone-frame {
+    max-width: 375px;
+    margin: 20px auto;
+    background: #1f1f1f;
+    border-radius: 36px;
+    padding: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    position: relative;
+}
+
+.phone-notch {
+    width: 150px;
+    height: 25px;
+    background: #1f1f1f;
+    border-radius: 0 0 15px 15px;
+    margin: 0 auto 8px;
+    position: relative;
+    z-index: 10;
+}
+
+.phone-screen {
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    min-height: 500px;
+    padding: 15px;
+}
+
+.phone-home-button {
+    width: 120px;
+    height: 4px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 2px;
+    margin: 8px auto 0;
+}
+    
     </style>
 </head>
 <body>
@@ -1259,13 +1295,15 @@ Especialistas certificados. Atención estructurada y decisiones informadas.
 
     return card;
 }
-
-       function createRSAPreviews(rsa, siteName, displayUrl, mode = 'desktop') {
+function createRSAPreviews(rsa, siteName, displayUrl, mode = 'desktop') {
     const isMobile = mode === 'mobile';
     
     if (isMobile) {
-        // Mobile carousel
-        let carouselHTML = '<div class="mobile-carousel-container">';
+        // Mobile carousel with phone frame
+        let carouselHTML = '<div class="phone-frame">';
+        carouselHTML += '<div class="phone-notch"></div>';
+        carouselHTML += '<div class="phone-screen">';
+        carouselHTML += '<div class="mobile-carousel-container">';
         carouselHTML += '<div class="carousel-nav prev" onclick="moveCarousel(this, -1)">‹</div>';
         carouselHTML += '<div class="carousel-nav next" onclick="moveCarousel(this, 1)">›</div>';
         carouselHTML += '<div class="mobile-carousel">';
@@ -1300,6 +1338,9 @@ Especialistas certificados. Atención estructurada y decisiones informadas.
         carouselHTML += '<span class="carousel-dot"></span>';
         carouselHTML += '</div>';
         carouselHTML += '</div>'; // Close container
+        carouselHTML += '</div>'; // Close screen
+        carouselHTML += '<div class="phone-home-button"></div>';
+        carouselHTML += '</div>'; // Close frame
         
         return carouselHTML;
     } else {
