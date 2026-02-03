@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Google Ads RSA Simulator - Arsen Web 3.0</title>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -929,10 +930,10 @@ Especialistas certificados. Atención estructurada y decisiones informadas.
                     </div>
                 </div>
 
-                <div class="button-group">
-                    <button class="btn-success" onclick="exportToCSV()">💾 Exportar a CSV</button>
-                    <button class="btn-secondary" onclick="clearAll()">🔄 Limpiar Todo</button>
-                </div>
+               <div class="button-group">
+                <button class="btn-success" onclick="exportToExcel()">📥 Exportar Todo (Excel)</button>
+                <button class="btn-secondary" onclick="clearAll()">🔄 Limpiar Todo</button>
+            </div>
             </div>
 
             <!-- Right Panel - Preview -->
@@ -1832,6 +1833,125 @@ function createRSAPreviews(rsa, siteName, displayUrl, mode = 'desktop') {
 
             downloadCSV(csv, 'google-ads-rsa');
         }
+
+        function exportToExcel() {
+    if (generatedRSAs.length === 0) {
+        alert('No hay RSAs generados para exportar');
+        return;
+    }
+
+    // Collect extensions
+    const extensions = collectExtensions();
+    
+    // Get campaign info
+    const campaignName = document.getElementById('strategic-site-name')?.value || 
+                        document.getElementById('site-name')?.value || 
+                        'Mi Campaña';
+    
+    // Create workbook
+    const wb = XLSX.utils.book_new();
+    
+    // ==================== SHEET 1: RSAs ====================
+    const rsaData = [];
+    
+    // Header row
+    const rsaHeaders = ['Campaign Name', 'Ad Group Name'];
+    for (let i = 1; i <= 15; i++) {
+        rsaHeaders.push(`Headline ${i}`);
+    }
+    for (let i = 1; i <= 4; i++) {
+        rsaHeaders.push(`Description ${i}`);
+    }
+    rsaData.push(rsaHeaders);
+    
+    // RSA rows
+    generatedRSAs.forEach((rsa, index) => {
+        const row = [
+            campaignName,
+            `Ad Group ${index + 1}`
+        ];
+        
+        // Add headlines (pad to 15)
+        for (let i = 0; i < 15; i++) {
+            row.push(rsa.headlines[i]?.text || '');
+        }
+        
+        // Add descriptions (pad to 4)
+        for (let i = 0; i < 4; i++) {
+            row.push(rsa.descriptions[i] || '');
+        }
+        
+        rsaData.push(row);
+    });
+    
+    const ws1 = XLSX.utils.aoa_to_sheet(rsaData);
+    XLSX.utils.book_append_sheet(wb, ws1, "RSAs");
+    
+    // ==================== SHEET 2: Extensions ====================
+    const extData = [];
+    
+    // Header row
+    extData.push(['Campaign Name', 'Extension Type', 'Text', 'Description', 'Header', 'Values', 'Phone']);
+    
+    // Sitelinks
+    extensions.sitelinks.forEach(link => {
+        extData.push([
+            campaignName,
+            'Sitelink',
+            link.text,
+            link.description,
+            '',
+            '',
+            ''
+        ]);
+    });
+    
+    // Callouts
+    extensions.callouts.forEach(callout => {
+        extData.push([
+            campaignName,
+            'Callout',
+            callout,
+            '',
+            '',
+            '',
+            ''
+        ]);
+    });
+    
+    // Structured Snippets
+    if (extensions.snippets.header && extensions.snippets.values.length > 0) {
+        extData.push([
+            campaignName,
+            'Structured Snippet',
+            '',
+            '',
+            extensions.snippets.header,
+            extensions.snippets.values.join('; '),
+            ''
+        ]);
+    }
+    
+    // Phone
+    if (extensions.phone) {
+        extData.push([
+            campaignName,
+            'Call Extension',
+            '',
+            '',
+            '',
+            '',
+            extensions.phone
+        ]);
+    }
+    
+    const ws2 = XLSX.utils.aoa_to_sheet(extData);
+    XLSX.utils.book_append_sheet(wb, ws2, "Extensions");
+    
+    // Download
+    const fileName = `${campaignName.replace(/[^a-z0-9]/gi, '_')}_RSAs_y_Extensions.xlsx`;
+    XLSX.writeFile(wb, fileName);
+}
 
         function exportStrategicRSAsToCSV() {
             const siteName = document.getElementById('strategic-site-name')?.value || 'Site Name';
