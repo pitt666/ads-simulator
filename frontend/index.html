@@ -1905,55 +1905,79 @@ function createRSAPreviews(rsa, siteName, displayUrl, mode = 'desktop') {
         }
 
         function clearAll() {
-            // Clear all headline inputs
-            for (let i = 0; i < headlineCount; i++) {
-                const input = document.getElementById(`headline-${i}`);
-                if (input) input.value = '';
-            }
-
-            // Clear all description inputs
-            for (let i = 0; i < descriptionCount; i++) {
-                const input = document.getElementById(`description-${i}`);
-                if (input) input.value = '';
-            }
-
-            // Clear site name and URL
-            const siteName = document.getElementById('site-name');
-            const displayUrl = document.getElementById('display-url');
-            if (siteName) siteName.value = '';
-            if (displayUrl) displayUrl.value = '';
-
-            // Clear bulk paste
-            const bulkPaste = document.getElementById('bulk-paste');
-            if (bulkPaste) bulkPaste.value = '';
-
-            // Clear strategic blocks
-            const bankH1 = document.getElementById('bank-h1');
-            const bankH2 = document.getElementById('bank-h2');
-            const bankH3 = document.getElementById('bank-h3');
-            const bankDesc = document.getElementById('bank-desc');
-            if (bankH1) bankH1.value = '';
-            if (bankH2) bankH2.value = '';
-            if (bankH3) bankH3.value = '';
-            if (bankDesc) bankDesc.value = '';
-
-            // Clear strategic config
-            const strategicSiteName = document.getElementById('strategic-site-name');
-            const strategicDisplayUrl = document.getElementById('strategic-display-url');
-            if (strategicSiteName) strategicSiteName.value = '';
-            if (strategicDisplayUrl) strategicDisplayUrl.value = '';
-
-            // Reset counters
-            updateBankCount('bank-h1', 'h1-count');
-            updateBankCount('bank-h2', 'h2-count');
-            updateBankCount('bank-h3', 'h3-count');
-            updateBankCount('bank-desc', 'desc-count');
-
-            // Clear generated RSAs
-            generatedRSAs = [];
-
-            updatePreviews();
-        }
+    // Clear all headline inputs
+    for (let i = 0; i < headlineCount; i++) {
+        const input = document.getElementById(`headline-${i}`);
+        if (input) input.value = '';
+    }
+    
+    // Clear all description inputs
+    for (let i = 0; i < descriptionCount; i++) {
+        const input = document.getElementById(`description-${i}`);
+        if (input) input.value = '';
+    }
+    
+    // Clear site name and URL
+    const siteName = document.getElementById('site-name');
+    const displayUrl = document.getElementById('display-url');
+    if (siteName) siteName.value = '';
+    if (displayUrl) displayUrl.value = '';
+    
+    // Clear bulk paste
+    const bulkPaste = document.getElementById('bulk-paste');
+    if (bulkPaste) bulkPaste.value = '';
+    
+    // Clear strategic blocks
+    const bankH1 = document.getElementById('bank-h1');
+    const bankH2 = document.getElementById('bank-h2');
+    const bankH3 = document.getElementById('bank-h3');
+    const bankDesc = document.getElementById('bank-desc');
+    if (bankH1) bankH1.value = '';
+    if (bankH2) bankH2.value = '';
+    if (bankH3) bankH3.value = '';
+    if (bankDesc) bankDesc.value = '';
+    
+    // Clear strategic config
+    const strategicSiteName = document.getElementById('strategic-site-name');
+    const strategicDisplayUrl = document.getElementById('strategic-display-url');
+    if (strategicSiteName) strategicSiteName.value = '';
+    if (strategicDisplayUrl) strategicDisplayUrl.value = '';
+    
+    // Clear sitelinks
+    for (let i = 0; i < sitelinkCount; i++) {
+        const textInput = document.getElementById(`sitelink-text-${i}`);
+        const descInput = document.getElementById(`sitelink-desc-${i}`);
+        if (textInput) textInput.value = '';
+        if (descInput) descInput.value = '';
+    }
+    
+    // Clear callouts
+    for (let i = 0; i < calloutCount; i++) {
+        const input = document.getElementById(`callout-${i}`);
+        if (input) input.value = '';
+    }
+    
+    // Clear snippets
+    const snippetHeader = document.getElementById('snippet-header');
+    const snippetValues = document.getElementById('snippet-values');
+    if (snippetHeader) snippetHeader.value = '';
+    if (snippetValues) snippetValues.value = '';
+    
+    // Clear phone
+    const phoneInput = document.getElementById('call-extension');
+    if (phoneInput) phoneInput.value = '';
+    
+    // Reset counters
+    updateBankCount('bank-h1', 'h1-count');
+    updateBankCount('bank-h2', 'h2-count');
+    updateBankCount('bank-h3', 'h3-count');
+    updateBankCount('bank-desc', 'desc-count');
+    
+    // Clear generated RSAs
+    generatedRSAs = [];
+    
+    updatePreviews();
+}
         function moveCarousel(button, direction) {
     const container = button.parentElement;
     const carousel = container.querySelector('.mobile-carousel');
